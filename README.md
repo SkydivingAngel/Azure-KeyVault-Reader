@@ -6,5 +6,5 @@ Getting Secrets from Azure KeyVault
 ## Requirements
 - Visual Studio 2022
 - Nuget Packages (simply run "dotnet restore"):  
-Azure.Identity
+Azure.Identity  
 Azure.Security.KeyVault.Secrets
