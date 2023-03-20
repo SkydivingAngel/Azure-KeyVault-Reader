@@ -50,5 +50,19 @@ namespace KeyVaultManager.Controllers
                 return await Task.FromResult(Ok(ex.ToString()));
             }
         }
+
+        [HttpGet, Route("{mysecret:string?}")]
+        public async Task<IActionResult> MySecret(string? mysecret)
+        {
+            var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+
+            if (string.IsNullOrWhiteSpace(mysecret))
+            {
+                KeyVaultSecret secret = await client.GetSecretAsync(mysecret);
+                return await Task.FromResult(Ok(secret.Value));
+            }
+
+            return new BadRequestResult();
+        }
     }
 }
