@@ -47,22 +47,28 @@ namespace KeyVaultManager.Controllers
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(Ok(ex.ToString()));
+                return await Task.FromResult(new BadRequestObjectResult(ex.ToString()));
             }
         }
 
-        [HttpGet, Route("{mysecret:string?}")]
+        [HttpGet, Route("secrets/{mysecret?}")]
         public async Task<IActionResult> MySecret(string? mysecret)
         {
-            var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
-
-            if (string.IsNullOrWhiteSpace(mysecret))
+            try
             {
-                KeyVaultSecret secret = await client.GetSecretAsync(mysecret);
-                return await Task.FromResult(Ok(secret.Value));
-            }
+                var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
 
-            return new BadRequestResult();
+                if (!string.IsNullOrWhiteSpace(mysecret))
+                {
+                    KeyVaultSecret secret = await client.GetSecretAsync(mysecret);
+                    return await Task.FromResult(Ok(secret.Value));
+                }
+                return await Task.FromResult(new BadRequestObjectResult("Null or Empty Parameter."));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new BadRequestObjectResult(ex.ToString()));
+            }
         }
     }
 }
